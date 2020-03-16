@@ -1929,6 +1929,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1936,7 +1951,8 @@ __webpack_require__.r(__webpack_exports__);
       user: {
         id: '',
         name: '',
-        email: ''
+        email: '',
+        password: ''
       },
       user_id: '',
       pagination: {},
@@ -1982,8 +1998,64 @@ __webpack_require__.r(__webpack_exports__);
           alert('User deleted successfully.');
 
           _this2.fetchUsers();
+        })["catch"](function (err) {
+          return console.log(err);
         });
       }
+    },
+    addUser: function addUser() {
+      var _this3 = this;
+
+      if (this.edit === false) {
+        //Add
+        fetch('api/addUser', {
+          method: 'post',
+          body: JSON.stringify(this.user),
+          headers: {
+            'content-type': 'application/json'
+          }
+        }).then(function (res) {
+          return res.json();
+        }).then(function (data) {
+          if (data.message) {
+            alert(data.message);
+          } else {
+            _this3.user.name = '';
+            _this3.user.email = '';
+            alert('User Added Successfully');
+          }
+
+          _this3.fetchUsers();
+        });
+      } else {
+        //Update
+        fetch('api/editUser', {
+          method: 'put',
+          body: JSON.stringify(this.user),
+          headers: {
+            'content-type': 'application/json'
+          }
+        }).then(function (res) {
+          return res.json();
+        }).then(function (data) {
+          if (data.message) {
+            alert(data.message);
+          } else {
+            _this3.user.name = '';
+            _this3.user.email = '';
+            alert('User Updated Successfully');
+          }
+
+          _this3.fetchUsers();
+        });
+      }
+    },
+    editUser: function editUser(user) {
+      this.edit = true;
+      this.user.id = user.id;
+      this.user.user_id = user.id;
+      this.user.name = user.name;
+      this.user.email = user.email;
     }
   }
 });
@@ -19635,6 +19707,77 @@ var render = function() {
     [
       _c("h2", [_vm._v("\n        Users\n    ")]),
       _vm._v(" "),
+      _c(
+        "form",
+        {
+          staticClass: "mb-3",
+          on: {
+            submit: function($event) {
+              $event.preventDefault()
+              return _vm.addUser($event)
+            }
+          }
+        },
+        [
+          _c("div", { staticClass: "form-group" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.user.name,
+                  expression: "user.name"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "text", placeholder: "Name" },
+              domProps: { value: _vm.user.name },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.user, "name", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "form-group" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.user.email,
+                  expression: "user.email"
+                }
+              ],
+              staticClass: "form-control",
+              attrs: { type: "email", placeholder: "EMail" },
+              domProps: { value: _vm.user.email },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.user, "email", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-info btn-block",
+              attrs: { type: "submit" }
+            },
+            [_vm._v("Save")]
+          )
+        ]
+      ),
+      _vm._v(" "),
       _c("nav", { attrs: { "aria-label": "Page navigation example" } }, [
         _c("ul", { staticClass: "pagination" }, [
           _c(
@@ -19707,6 +19850,19 @@ var render = function() {
           _c("p", [_vm._v(_vm._s(user.email))]),
           _vm._v(" "),
           _c("hr"),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-warning mb-2",
+              on: {
+                click: function($event) {
+                  return _vm.editUser(user)
+                }
+              }
+            },
+            [_vm._v("Edit")]
+          ),
           _vm._v(" "),
           _c(
             "button",
